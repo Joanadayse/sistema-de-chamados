@@ -1,17 +1,16 @@
 import { Route, Routes,  } from "react-router-dom";
-import Signin from "../pages/Signin";
+import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 
 
 
 function RoutesApp(){
-    return(
-        <Routes>
-            <Route path="/" element={<Signin/>}/>
-            <Route path="/register" element={<SignUp/>}/>
-        </Routes>
-
-    )
+    return (
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/register" element={<SignUp />} />
+      </Routes>
+    );
 }
 
 export default RoutesApp;
