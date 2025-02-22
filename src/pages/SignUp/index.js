@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/auth";
 
 export default function SignUp() {
-  const [name,setName]= useState("");
+  const [nome,setNome]= useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,8 +14,8 @@ export default function SignUp() {
 async  function handleSubmit(e){
 e.preventDefault();
 
-if(name !== '' && email !== '' && password !== ''){
-await  signUp(email , password , name);
+if(nome !== '' && email !== '' && password !== ''){
+await  signUp(email , password , nome);
 }
   }
 
@@ -32,8 +32,8 @@ await  signUp(email , password , name);
           <input
             type="text"
             placeholder="Seu Nome"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
           />
           <input
             type="text"
