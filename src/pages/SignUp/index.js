@@ -1,20 +1,25 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import logo from "../../assests/logo.png";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/auth";
 
 export default function SignUp() {
   const [name,setName]= useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { signUp, loadingAuth } = useContext(AuthContext);
 
-  function handleSubmit(e){
+
+async  function handleSubmit(e){
 e.preventDefault();
 
 if(name !== '' && email !== '' && password !== ''){
-  alert("Fazer cadastro!")
+await  signUp(email , password , name);
 }
   }
+
+
   return (
     <div className="container-center">
       <div className="login">
@@ -43,7 +48,7 @@ if(name !== '' && email !== '' && password !== ''){
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button type="submit">Cadastrar</button>
+          <button type="submit">{loadingAuth ? 'Carregando...': 'Cadastrar'}</button>
         </form>
         <Link to="/"> Já possui uma conta? Faça Login</Link>
       </div>
