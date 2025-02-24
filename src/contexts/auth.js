@@ -1,8 +1,8 @@
-import { createContext, use, useEffect, useState } from "react";
+import { createContext,  useEffect, useState } from "react";
 import { auth,db} from "../services/firebaseConection";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc,getDoc, setDoc } from "firebase/firestore";
-import { Await, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const AuthContext= createContext({})
@@ -38,9 +38,9 @@ function AuthProvider({children}){
     const docSnap= await getDoc(docRef)
     let data = {
       uid: uid,
-      nome: docSnap.data.nome,
+      nome: docSnap.data.name,
       email: value.user.email,
-      avatarUrl: docSnap.data.avatarUrl,
+      avatarUrl: docSnap.data().avatarUrl || null,
     };
 
     setUser(data);
@@ -70,19 +70,19 @@ async function signUp(email,password,name){
      let uid = value.user.uid;
 
      await setDoc(doc(db, "users", uid), {
-       name: name,
-       avatarUrl: null,
+       nome: name,
+       avatarUrl: "URL_PADRAO_DA_IMAGEM",
      }).then(() => {
-       let data={
-        uid:uid,
-        name:name,
-        email:value.user.email,
-        avatarUrl:null
+       let data = {
+         uid: uid,
+         nome: name,
+         email: value.user.email,
+         avatarUrl: null,
        };
        setUser(data);
        storageUser(data);
        setLoadingAuth(false);
-       toast.success("Seja bem vindo ao sistema!")
+       toast.success("Seja bem vindo ao sistema!");
        navigate("/dashboard");
      });
    })
@@ -112,9 +112,9 @@ async function logout(params) {
           user,
           signIn,
           signUp,
+          logout,
           loadingAuth,
           loading,
-          logout,
         }}
       >
         {children}
