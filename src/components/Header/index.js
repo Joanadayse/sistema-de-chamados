@@ -9,7 +9,7 @@ import { FiHome, FiSettings, FiUser } from "react-icons/fi";
 
 export default function Header() {
   const { user } = useContext(AuthContext);
-  console.log("Usuário carregado:", user);
+  // console.log("Usuário carregado:", user);
 
   return (
     <div className="sidebar">

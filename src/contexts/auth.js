@@ -29,37 +29,90 @@ function AuthProvider({children}){
       loadUser();
     },[])
 
-  async  function signIn(email,password){
-      setLoadingAuth(true);
-  await signInWithEmailAndPassword(auth,email,password)
-  .then(async(value)=>{
-    let  uid= value.user.uid;
-    const docRef= doc(db,"users", uid );
-    const docSnap= await getDoc(docRef)
-    let data = {
-      uid: uid,
-      nome: docSnap.data.name,
-      email: value.user.email,
-      avatarUrl: docSnap.data().avatarUrl || null,
-    };
+  // async  function signIn(email,password){
+  //     setLoadingAuth(true);
+  // await signInWithEmailAndPassword(auth,email,password)
+  // .then(async(value)=>{
+  //   let  uid= value.user.uid;
+  //   const docRef= doc(db,"users", uid );
+  //   const docSnap= await getDoc(docRef);
+  //       console.log("Dados do Firestore:", docSnap.data());
+  //   let data = {
+  //     uid: uid,
+  //     nome: docSnap.data().nome,
+  //     email: value.user.email,
+  //     avatarUrl: docSnap.data().avatarUrl || null,
+  //   };
+  
 
-    setUser(data);
-    storageUser(data);
-    setLoadingAuth(false);
-    toast.success("Bem vindo(a) de volta!");
-    navigate("/dashboard");
+  //   setUser(data);
+  //   storageUser(data);
+  //   setLoadingAuth(false);
+  //   toast.success("Bem vindo(a) de volta!");
+  //   navigate("/dashboard");
      
     
-  })
+  // })
 
-  .catch((error)=>{
-    console.log(error);
-    setLoadingAuth(false);
-    toast.error("Ops algo deu errado :(")
-  })
+  // .catch((error)=>{
+  //   console.log(error);
+  //   setLoadingAuth(false);
+  //   toast.error("Ops algo deu errado :(")
+  // })
 
 
-    }
+  //   }
+
+
+async function signIn(email, password) {
+  console.log("Função signIn foi chamada!"); // Verifica se a função é executada
+  setLoadingAuth(true);
+
+  await signInWithEmailAndPassword(auth, email, password)
+    .then(async (value) => {
+      console.log("Usuário autenticado:", value.user); // Verifica se o login foi bem-sucedido
+
+      let uid = value.user.uid;
+      const docRef = doc(db, "users", uid);
+
+      try {
+        const docSnap = await getDoc(docRef);
+        console.log("Documento Firestore encontrado?", docSnap.exists());
+
+        if (docSnap.exists()) {
+          console.log("Dados do Firestore:", docSnap.data());
+
+          let data = {
+            uid: uid,
+            nome: docSnap.data().nome || "Nome não encontrado",
+            email: value.user.email,
+            avatarUrl: docSnap.data().avatarUrl || null,
+          };
+
+          setUser(data);
+          storageUser(data);
+          setLoadingAuth(false);
+          toast.success("Bem-vindo(a) de volta!");
+          navigate("/dashboard");
+        } else {
+          console.log("Usuário não encontrado no Firestore.");
+          toast.error("Usuário não encontrado no banco de dados.");
+          setLoadingAuth(false);
+        }
+      } catch (error) {
+        console.log("Erro ao buscar documento no Firestore:", error);
+        toast.error("Erro ao buscar dados do usuário.");
+        setLoadingAuth(false);
+      }
+    })
+    .catch((error) => {
+      console.log("Erro ao fazer login:", error);
+      setLoadingAuth(false);
+      toast.error("Ops, algo deu errado :(");
+    });
+}
+
+
 
 
 
@@ -79,12 +132,15 @@ async function signUp(email,password,name){
          email: value.user.email,
          avatarUrl: null,
        };
+      
        setUser(data);
        storageUser(data);
        setLoadingAuth(false);
        toast.success("Seja bem vindo ao sistema!");
        navigate("/dashboard");
+       
      });
+   
    })
 
    .catch((error) => {
@@ -105,6 +161,8 @@ async function logout(params) {
   
 }
 
+
+
     return (
       <AuthContext.Provider
         value={{
@@ -115,6 +173,8 @@ async function logout(params) {
           logout,
           loadingAuth,
           loading,
+          storageUser,
+          setUser,
         }}
       >
         {children}
