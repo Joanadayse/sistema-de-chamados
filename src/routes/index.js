@@ -4,6 +4,7 @@ import SignUp from "../pages/SignUp";
 import Dashboard from "../pages/Dashboard";
 import Private from "./private";
 import Profile from "../pages/Profile";
+import Custumers from "../pages/Custumers";
 
 
 
@@ -28,6 +29,8 @@ function RoutesApp(){
             </Private>
           }
         />
+
+        <Route path="/custumers" element={<Private><Custumers/></Private>}/>
       </Routes>
     );
 }
