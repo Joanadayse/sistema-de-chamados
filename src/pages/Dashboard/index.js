@@ -33,7 +33,7 @@ export default function Dashboard() {
               <tr>
                 <th scope="col">Cliente</th>
                 <th scope="col">Assunto</th>
-                <th scope="col">Status</th>
+                <th scope="col">Status </th>
                 <th scope="col">Cadastrado em</th>
                 <th scope="col">*</th>
               </tr>
@@ -43,7 +43,11 @@ export default function Dashboard() {
               <tr>
                 <td data-label="Clientes">Mercado esquina</td>
                 <td data-label="Assunto">Suporte</td>
-                <td data-label="Status">Em aberto</td>
+                <td data-label="Status">
+                  <span className="badge" style={{ backgroundColor: "#999" }}>
+                    Em aberto
+                  </span>
+                </td>
                 <td data-label="Cadastrado">27/02/25</td>
                 <td data-label="#">
                   <button
