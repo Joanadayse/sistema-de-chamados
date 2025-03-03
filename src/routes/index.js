@@ -47,6 +47,15 @@ function RoutesApp(){
             </Private>
           }
         />
+
+        <Route
+          path="/new/:id"
+          element={
+            <Private>
+              <New />
+            </Private>
+          }
+        />
       </Routes>
     );
 }

@@ -7,11 +7,13 @@ import { AuthContext } from "../../contexts/auth";
 import { db } from "../../services/firebaseConection";
 import { collection, getDoc, getDocs, doc, addDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 const listRef = collection(db, "custumers");
 
 export default function New() {
   const { user } = useContext(AuthContext);
+  const {id}=useParams();
 
   const [customers, setCustomers] = useState([]);
   const [loadCustomes, setLoadCustomer] = useState();
@@ -19,6 +21,7 @@ export default function New() {
   const [assunto, setAssunto] = useState("Suporte");
   const [status, setStatus] = useState("Aberto");
   const [custumerSelected, setCustumerSelected] = useState(0);
+  const [idCustomer, setIdCustomer ]= useState(false)
 
   useEffect(() => {
     async function loadCustomes(params) {
@@ -41,6 +44,10 @@ export default function New() {
 
           setCustomers(lista);
           setLoadCustomer(false);
+
+          if(id){
+            loadId(lista);
+          }
         })
         .catch((error) => {
           console.log("ERROR AO BUSCAR OS CLIENTES", error);
@@ -50,7 +57,27 @@ export default function New() {
     }
 
     loadCustomes();
-  });
+  },[id]);
+
+  async function loadId(lista) {
+    const docRef= doc(db, "chamados",id)
+    await getDoc(docRef)
+      .then((snapshot) => {
+        setAssunto(snapshot.data().assunto)
+        setStatus(snapshot.data().status)
+        setComplemento(snapshot.data().complemento)
+
+        // buscando na lista se tem algum cliente igual ao que foi buscado
+        let index=lista.findIndex(item=> item.id === snapshot.data().clienteId)
+        setCustumerSelected(index)
+        setIdCustomer(true)
+      })
+      .catch((error) => {
+        console.log(error);
+        setIdCustomer(false)
+      });
+    
+  }
 
   function handleOptionChange(e) {
     setStatus(e.target.value);
@@ -66,6 +93,11 @@ export default function New() {
 
   async function handleRegister(e){
     e.preventDefault();
+
+    if(idCustomer){
+      alert("Editando chamado")
+      return;
+    }
 
     // Registrar chamado
 
