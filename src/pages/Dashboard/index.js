@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { collection, getDocs, limit, orderBy, query, startAfter } from "firebase/firestore";
 import { db } from "../../services/firebaseConection";
 import { format } from "date-fns";
+import Modal from "../../components/Modal";
 
 
 const listRef= collection(db,"chamados");
@@ -198,7 +199,7 @@ const lastDocs= querySnapshot.docs[querySnapshot.docs.length -1];
         </>
       </div>
 
-      {/* <button onClick={handleLogout}>sair da conta</button> */}
+      <Modal/>
     </div>
   );
 }
