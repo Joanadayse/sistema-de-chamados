@@ -22,6 +22,8 @@ export default function Dashboard() {
   const [isEmpty, setIsEmpty]= useState(false);
   const [lastDocs, setLastDocs]=useState();
   const [loadingMore, setLoadingMore]= useState(false);
+  const [showPostModal, setShowPostModal]= useState(false);
+  const [detail , setDetail]= useState();
 
   useEffect(()=>{
    async function loadChamados(params) {
@@ -84,6 +86,12 @@ const lastDocs= querySnapshot.docs[querySnapshot.docs.length -1];
     const q = query(listRef, orderBy("created", "desc"),startAfter(lastDocs), limit(5));
     const querySnapshot=await getDocs(q)
     await updateState(querySnapshot);
+    }
+
+    function toggleModal(item){
+      setShowPostModal(!showPostModal)
+      setDetail(item)
+
     }
 
   // antes de buscar os chamados - setLoading(true), ele renderiza "Buscando chamados..." , apos carregar todos os chamados  setLoading(false) , renderiza toda a tabela com os chamados;
@@ -172,6 +180,7 @@ const lastDocs= querySnapshot.docs[querySnapshot.docs.length -1];
                           <button
                             className="action"
                             style={{ backgroundColor: "#3583f6" }}
+                            onClick={()=>toggleModal(item)}
                           >
                             <FiSearch color="#fff" size={17} />
                           </button>
@@ -199,7 +208,13 @@ const lastDocs= querySnapshot.docs[querySnapshot.docs.length -1];
         </>
       </div>
 
-      <Modal/>
+    {showPostModal && (
+      <Modal
+      conteudo={detail}
+      close={()=>setShowPostModal(!showPostModal)}
+      
+      />
+    )}
     </div>
   );
 }
