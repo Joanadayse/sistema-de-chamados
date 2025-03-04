@@ -5,15 +5,16 @@ import "./new.css";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/auth";
 import { db } from "../../services/firebaseConection";
-import { collection, getDoc, getDocs, doc, addDoc } from "firebase/firestore";
+import { collection, getDoc, getDocs, doc, addDoc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const listRef = collection(db, "custumers");
 
 export default function New() {
   const { user } = useContext(AuthContext);
   const {id}=useParams();
+  const navigate= useNavigate();
 
   const [customers, setCustomers] = useState([]);
   const [loadCustomes, setLoadCustomer] = useState();
@@ -95,7 +96,26 @@ export default function New() {
     e.preventDefault();
 
     if(idCustomer){
-      alert("Editando chamado")
+      // atualizando chamado
+      const docRef= doc(db, "chamados", id)
+      await updateDoc(docRef, {
+        cliente: customers[custumerSelected].nomeFantasia,
+        clienteId: customers[custumerSelected].id,
+        assunto: assunto,
+        complemento: complemento,
+        status: status,
+        userId: user.uid,
+      })
+      .then(()=>{
+        toast.info("Chamado atualizado com sucesso!")
+        setCustumerSelected(0);
+        setComplemento("");
+        navigate("/dashboard")
+      })
+      .catch((error)=>{
+        toast.error("Ops erro ao atualizar esse chamado :(")
+        console.log(error)
+      })
       return;
     }
 
@@ -127,7 +147,7 @@ export default function New() {
     <div>
       <Header />
       <div className="content">
-        <Title name="Novo chamado">
+        <Title name={id ? "Editando Chamado" : "Novo Chamado"} >
           <FiPlayCircle size={25} />
         </Title>
 
